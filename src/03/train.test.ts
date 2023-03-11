@@ -1,4 +1,5 @@
-import {CityType} from "./sity-type";
+import {CityType} from "../02/sity-type";
+import {addMoneyToBudget, createMessage, repairHouse, toFireStaff, toHireStaff} from "./function";
 
 let city: CityType;
 
@@ -36,7 +37,7 @@ beforeEach(() => {
                     }
                 }
             },
-            ],
+        ],
         governmentBuildings: [
             {
                 type: "HOSPITAL",
@@ -63,37 +64,35 @@ beforeEach(() => {
     }
 })
 
+test('Budget should be for changed fot HOSPITAL', () => {
+    addMoneyToBudget(city.governmentBuildings[0], 100000);
+    expect(city.governmentBuildings[0].budget).toBe(300000);
+});
 
-test("city should contains 3 houses", () => {
-    expect(city.houses.length).toBe(3);
+test('Budget should be changed for FIRE-STATION', () => {
+    addMoneyToBudget(city.governmentBuildings[1], -100000);
+    expect(city.governmentBuildings[1].budget).toBe(400000);
+});
 
-    expect(city.houses[0].buildedAt).toBe(2012);
-    expect(city.houses[0].repaired).toBe(false);
-    expect(city.houses[0].address.number).toBe(100);
-    expect(city.houses[0].address.street.title).toBe("White street");
+test.skip('House should be repaired', () => {
+    repairHouse(city.houses[1]);
+    expect(city.houses[1].repaired).toBeTruthy();
+});
 
-    expect(city.houses[1].buildedAt).toBe(2008);
-    expect(city.houses[1].repaired).toBe(false);
-    expect(city.houses[1].address.number).toBe(100);
-    expect(city.houses[1].address.street.title).toBe("Happy street");
+test('Staff should be reduced', () => {
+    toFireStaff(city.governmentBuildings[0], 20);
 
-    expect(city.houses[2].buildedAt).toBe(2020);
-    expect(city.houses[2].repaired).toBe(false);
-    expect(city.houses[2].address.number).toBe(101);
-    expect(city.houses[2].address.street.title).toBe("Happy street");
-})
+    expect(city.governmentBuildings[0].staffCount).toBe(180);
+});
 
+test('Staff should be increased', () => {
+    toHireStaff(city.governmentBuildings[0], 20);
 
-test("test city should contains hospital and fire station", () => {
-    expect(city.governmentBuildings.length).toBe(2);
+    expect(city.governmentBuildings[0].staffCount).toBe(220);
+});
 
-    expect(city.governmentBuildings[0].type).toBe("HOSPITAL");
-    expect(city.governmentBuildings[0].budget).toBe(200000);
-    expect(city.governmentBuildings[0].staffCount).toBe(200);
-    expect(city.governmentBuildings[0].address.street.title).toBe("Central Str");
+test('Greeting message should be correct for city', () => {
+    const message = createMessage(city)
 
-    expect(city.governmentBuildings[1].type).toBe("FIRE-STATION");
-    expect(city.governmentBuildings[1].budget).toBe(500000);
-    expect(city.governmentBuildings[1].staffCount).toBe(1000);
-    expect(city.governmentBuildings[1].address.street.title).toBe("South Str");
+    expect(message).toBe("Hello New York citizens. I want you be happy. All 100000 men" )
 })
